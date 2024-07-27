@@ -28,10 +28,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	numberOfRecords := 0
-	if len(records) > 1 {
-		numberOfRecords = len(records) - 1 // substract by 1 because first rows is a header
-	}
 
 	m := map[string]int{}
 	for i, record := range records {
@@ -70,7 +66,7 @@ func main() {
 	}
 
 	duration := time.Since(start)
-	fmt.Println("rows count: ", numberOfRecords)
+	fmt.Println("rows count: ", len(records))
 	fmt.Println("sorted from most customers in the city: ", dc)
 	fmt.Println("processing time (ms): ", duration.Milliseconds())
 }
