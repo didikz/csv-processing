@@ -24,6 +24,7 @@ func main() {
 
 	r := csv.NewReader(c)
 	r.FieldsPerRecord = -1
+	r.ReuseRecord = true
 	records, err := r.ReadAll()
 	if err != nil {
 		log.Fatal(err)
