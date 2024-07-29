@@ -1,24 +1,28 @@
 <?php
+// start profiling
 $startMemory = memory_get_usage();
 $timeStart = microtime(true); 
+
 // open the file
 $f = fopen("../data/customers-1000000.csv", "r");
 $cityMap = [];
 $rows = 0;
 if ($f !== false) {
-    $records = extractCsv($f);
+    $records = extractCsv($f); // extract csv records and load it to iterator
     foreach ($records as $key => $record) {
         $rows++;
         if ($key == 0) {
             continue;  // skip header row
         }
         
+        // create array map for city and total customers
         if (array_key_exists($record[6], $cityMap)) {
             $cityMap[$record[6]]++;
         } else {
             $cityMap[$record[6]] = 1;
         }
     }
+    
     arsort($cityMap); // descending sort city by customer count value
 } else {
     echo "Error opening file\n";
