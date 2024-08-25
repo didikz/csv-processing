@@ -14,6 +14,6 @@ Use Customer CSV sample from [this repo](https://github.com/datablist/sample-csv
 ## Programming languages
 
 + [x] Go
-+ [ ] Javascript
++ [x] Javascript
 + [ ] Python
 + [x] PHP
