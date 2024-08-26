@@ -7,14 +7,17 @@ function processCsvChunk(path) {
 
     const reader = fs.createReadStream(path, { encoding: "utf8" });
 
+    // handle errors
     reader.on('error', (err) => console.error(`Error reading file: ${err}`));
 
+    // chunk the data stream and concat it into a single variable
     let data = '';
     reader.on('data', (chunk) => data += chunk);
 
+    // at the end of the process, process the concatenated data and process it to map & sorting
     reader.on('end', () => {
         const customers = data.split('\n')
-                                .slice(1)
+                                .slice(1) // do not include header row
                                 .filter(row => row !== '')
                                 .map(row => {
                                     let splitted = [];
@@ -33,8 +36,8 @@ function processCsvChunk(path) {
                                     splitted.push(current);
                                     return splitted;
                                 });
-            // data = '';
 
+        // map the data for city and total customers
         let cities = new Map(); // 'city name': total customer
         customers.forEach((val) => {
             if (cities.has(val[6])) {
@@ -44,6 +47,7 @@ function processCsvChunk(path) {
             }
         });
 
+        // sorted by the biggest customers first
         const sorted = Array.from(cities).sort((a, b) => b[1] - a[1]);
 
         console.log('rows count: ' + customers.length);
@@ -65,10 +69,14 @@ async function processCsvAwait(path) {
     let count = 0;
     let cities = new Map();
     for await (const line of rl) {
+        // process each row, excluding header row
+        // map data customer to cities
         if (count > 1) { // skip header row
             let splitted = [];
             let current = '';
             let inQuotes = false;
+
+            // handle double quote contents because there's possibility comma inside the the double quotes
             for (let char of line) {
                 if (char === '"') {
                     inQuotes = !inQuotes;
@@ -91,6 +99,7 @@ async function processCsvAwait(path) {
         count++;
     }
 
+    // sorted by the biggest customers first
     const sorted = Array.from(cities).sort((a, b) => b[1] - a[1]);
 
     console.log('rows count: ' + (count - 1)); // exclude header row
